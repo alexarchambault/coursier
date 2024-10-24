@@ -341,27 +341,43 @@ object Resolution {
 
     lazy val dict = DepMgmt.addSeq(overrides, dependencyManagement)
 
-    lazy val dict0 =
-      if (forceDepMgmtVersions) dict
-      else {
-        val clearDepMgmtVersion = dependencies
-          .map(_._2)
-          .groupBy(DepMgmt.key)
-          .collect {
-            case (k, l) if !overrides.contains(k) && l.forall(_.version.nonEmpty) =>
-              k
+    lazy val dictForOverrides = {
+      lazy val clearDepMgmtVersion = dependencies
+        .filter {
+          case (config, _) =>
+            config.isEmpty ||
+            config == Configuration.compile ||
+            config == Configuration.default ||
+            config == Configuration.defaultCompile
+        }
+        .map(_._2)
+        .groupBy(DepMgmt.key)
+        .collect {
+          case (k, l) if !overrides.contains(k) && l.forall(_.version.nonEmpty) =>
+            k
+        }
+        .toSet
+      DepMgmt.addSeq(
+        overrides,
+        dependencyManagement
+          .filter {
+            case (config, _) =>
+              config.isEmpty ||
+              config == Configuration.compile ||
+              config == Configuration.default ||
+              config == Configuration.defaultCompile
           }
-          .toSet
-        dict
           .map {
-            case (k, v) =>
-              k -> {
-                if (clearDepMgmtVersion(k)) v.withVersion("")
-                else v
-              }
+            case (config, dep) =>
+              if (!forceDepMgmtVersions && clearDepMgmtVersion(DepMgmt.key(dep)))
+                (config, dep.withVersion(""))
+              else
+                (config, dep)
           }
-          .filter(!_._2.isEmpty)
-      }
+      ).filter(!_._2.isEmpty)
+    }
+
+    lazy val dict0 = dictForOverrides
     dependencies.map {
       case (config0, dep0) =>
         var config = config0
@@ -376,7 +392,7 @@ object Resolution {
           if (useManagedVersion)
             dep = dep.withVersion(mgmtValues.version)
 
-          if (config.isEmpty)
+          if (mgmtValues.config.nonEmpty && (config.isEmpty || overrides.contains(key)))
             config = mgmtValues.config
 
           // FIXME The version and scope/config from dependency management, if any, are substituted
