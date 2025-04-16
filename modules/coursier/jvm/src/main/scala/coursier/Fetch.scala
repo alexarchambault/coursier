@@ -26,7 +26,7 @@ import dataclass.data
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-@data class Fetch[F[_]](
+@data class Fetch[F[+_]](
   private val resolve: Resolve[F],
   private val artifacts: Artifacts[F],
   fetchCacheOpt: Option[File]
@@ -383,7 +383,7 @@ object Fetch {
       None
     )
 
-  def apply[F[_]](cache: Cache[F])(implicit S: Sync[F]): Fetch[F] =
+  def apply[F[+_]](cache: Cache[F])(implicit S: Sync[F]): Fetch[F] =
     new Fetch[F](
       Resolve(cache),
       Artifacts(cache),

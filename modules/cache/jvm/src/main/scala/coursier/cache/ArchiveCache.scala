@@ -13,7 +13,7 @@ import java.security.MessageDigest
 
 import scala.util.Using
 
-@data class ArchiveCache[F[_]](
+@data class ArchiveCache[F[+_]](
   location: File,
   cache: Cache[F] = FileCache(),
   unArchiver: UnArchiver = UnArchiver.default(),
@@ -268,10 +268,10 @@ import scala.util.Using
 
 object ArchiveCache {
 
-  def apply[F[_]]()(implicit S: Sync[F] = Task.sync): ArchiveCache[F] =
+  def apply[F[+_]]()(implicit S: Sync[F] = Task.sync): ArchiveCache[F] =
     ArchiveCache(CacheDefaults.archiveCacheLocation)(S)
 
-  def priviledged[F[_]]()(implicit S: Sync[F] = Task.sync): ArchiveCache[F] =
+  def priviledged[F[+_]]()(implicit S: Sync[F] = Task.sync): ArchiveCache[F] =
     ArchiveCache(CacheDefaults.priviledgedArchiveCacheLocation)(S)
       .withUnArchiver(UnArchiver.priviledged())
 

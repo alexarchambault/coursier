@@ -30,7 +30,7 @@ import scala.util.Properties
 import scala.util.control.NonFatal
 
 // format: off
-@data class FileCache[F[_]](
+@data class FileCache[F[+_]](
   location: File,
   cachePolicies: Seq[CachePolicy] = CacheDefaults.cachePolicies,
   checksums: Seq[Option[String]] = CacheDefaults.checksums,
@@ -446,7 +446,7 @@ object FileCache {
     new File(file.getParentFile, s"${auxiliaryFilePrefix(file)}$key0")
   }
 
-  def apply[F[_]]()(implicit S: Sync[F] = Task.sync): FileCache[F] =
+  def apply[F[+_]]()(implicit S: Sync[F] = Task.sync): FileCache[F] =
     FileCache(CacheDefaults.location)(S)
 
   /* Store computed cache in a file so we don't have to recompute them over and over. */

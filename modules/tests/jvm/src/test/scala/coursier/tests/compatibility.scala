@@ -26,9 +26,9 @@ object compatibility {
     new String(Files.readAllBytes(f.toPath), UTF_8)
   }
 
-  def artifact[F[_]: Sync]: Repository.Fetch[F] =
+  def artifact[F[+_]: Sync]: Repository.Fetch[F] =
     TestCache.cache[F].fetch
-  def artifactWithProxy[F[_]: Sync](proxy: java.net.Proxy): Repository.Fetch[F] =
+  def artifactWithProxy[F[+_]: Sync](proxy: java.net.Proxy): Repository.Fetch[F] =
     TestCache.cache[F].withProxy(Some(proxy)).fetch
 
   val taskArtifact = artifact[Task]

@@ -7,12 +7,12 @@ private[coursier] object ResolveInternals {
   // putting that method in Resolve.scala, so it lives in an
   // external file and class here
   @nowarn
-  def deprecatedBomDependencies[F[_]](resolve: Resolve[F]) =
+  def deprecatedBomDependencies[F[+_]](resolve: Resolve[F]) =
     resolve.bomDependencies
   @nowarn
-  def deprecatedMapDependenciesOpt[F[_]](resolve: Resolve[F]) =
+  def deprecatedMapDependenciesOpt[F[+_]](resolve: Resolve[F]) =
     resolve.mapDependenciesOpt
   @nowarn
-  def deprecatedBomModuleVersions[F[_]](resolve: Resolve[F]) =
+  def deprecatedBomModuleVersions[F[+_]](resolve: Resolve[F]) =
     resolve.bomModuleVersions
 }

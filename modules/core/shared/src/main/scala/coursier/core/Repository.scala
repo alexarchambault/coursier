@@ -16,7 +16,7 @@ trait Repository extends Serializable with ArtifactSource {
   def repr: String =
     toString
 
-  def find0[F[_]](
+  def find0[F[+_]](
     module: Module,
     version: Version0,
     fetch: Repository.Fetch[F]
@@ -29,7 +29,7 @@ trait Repository extends Serializable with ArtifactSource {
     "Use find0 instead - if overriding this method, override the other, and call it from here",
     "2.1.25"
   )
-  def find[F[_]](
+  def find[F[+_]](
     module: Module,
     version: String,
     fetch: Repository.Fetch[F]
@@ -38,7 +38,7 @@ trait Repository extends Serializable with ArtifactSource {
   ): EitherT[F, String, (ArtifactSource, Project)]
 
   @deprecated("Unused by coursier", "2.1.25")
-  def findMaybeInterval[F[_]](
+  def findMaybeInterval[F[+_]](
     module: Module,
     version: VersionConstraint0,
     fetch: Repository.Fetch[F]
@@ -63,7 +63,7 @@ trait Repository extends Serializable with ArtifactSource {
     }
 
   @deprecated("Unused by coursier", "2.1.25")
-  def findMaybeInterval[F[_]](
+  def findMaybeInterval[F[+_]](
     module: Module,
     version: String,
     fetch: Repository.Fetch[F]
@@ -72,7 +72,7 @@ trait Repository extends Serializable with ArtifactSource {
   ): EitherT[F, String, (ArtifactSource, Project)] =
     findMaybeInterval(module, VersionConstraint0(version), fetch)(F)
 
-  def findFromVersionConstraint[F[_]](
+  def findFromVersionConstraint[F[+_]](
     module: Module,
     versionConstraint: VersionConstraint0,
     fetch: Repository.Fetch[F]
@@ -137,13 +137,13 @@ trait Repository extends Serializable with ArtifactSource {
     }
   }
 
-  def completeOpt[F[_]: Monad](fetch: Repository.Fetch[F]): Option[Repository.Complete[F]] =
+  def completeOpt[F[+_]: Monad](fetch: Repository.Fetch[F]): Option[Repository.Complete[F]] =
     None
 
   def versionsCheckHasModule: Boolean =
     false
 
-  def versions[F[_]](
+  def versions[F[+_]](
     module: Module,
     fetch: Repository.Fetch[F]
   )(implicit
@@ -151,7 +151,7 @@ trait Repository extends Serializable with ArtifactSource {
   ): EitherT[F, String, (Versions, String)] =
     versions(module, fetch, versionsCheckHasModule = false)
 
-  def versions[F[_]](
+  def versions[F[+_]](
     module: Module,
     fetch: Repository.Fetch[F],
     versionsCheckHasModule: Boolean
@@ -174,7 +174,7 @@ trait Repository extends Serializable with ArtifactSource {
     else
       fetchVersions(module, fetch)
 
-  protected def fetchVersions[F[_]](
+  protected def fetchVersions[F[+_]](
     module: Module,
     fetch: Repository.Fetch[F]
   )(implicit
@@ -185,7 +185,7 @@ trait Repository extends Serializable with ArtifactSource {
 
 object Repository {
 
-  type Fetch[F[_]] = Artifact => EitherT[F, String, String]
+  type Fetch[F[+_]] = Artifact => EitherT[F, String, String]
 
   implicit class ArtifactExtensions(val underlying: Artifact) extends AnyVal {
     def withDefaultChecksums: Artifact =
@@ -209,7 +209,7 @@ object Repository {
       ))
   }
 
-  trait Complete[F[_]] {
+  trait Complete[F[+_]] {
     def organization(prefix: String): F[Either[Throwable, Seq[String]]]
     def moduleName(organization: Organization, prefix: String): F[Either[Throwable, Seq[String]]]
     protected def moduleDirectory(module: Module): String
@@ -474,7 +474,7 @@ object Repository {
       "Use find0 instead - if overriding this method, override the other, and call it from here",
       "2.1.25"
     )
-    def find[F[_]](
+    def find[F[+_]](
       module: Module,
       version: String,
       fetch: Repository.Fetch[F]

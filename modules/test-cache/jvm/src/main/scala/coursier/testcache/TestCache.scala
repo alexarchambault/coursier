@@ -24,7 +24,7 @@ object TestCache {
   val updateSnapshots = Option(System.getenv("FETCH_MOCK_DATA"))
     .exists(s => s == "1" || s == "true")
 
-  def cache[F[_]: Sync] = MockCache.create(
+  def cache[F[+_]: Sync] = MockCache.create(
     dataDir,
     baseChangingOpt = Some(dataDir.resolve("changing")),
     writeMissing = updateSnapshots,

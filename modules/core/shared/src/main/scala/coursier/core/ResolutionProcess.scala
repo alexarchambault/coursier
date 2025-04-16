@@ -247,7 +247,7 @@ object ResolutionProcess {
     * provided one, in case the latter is not a specific version (e.g. version interval). Which
     * version get chosen depends on the repository implementation.
     */
-  def fetchOne[F[_]](
+  def fetchOne[F[+_]](
     repositories: Seq[Repository],
     module: Module,
     version: VersionConstraint0,
@@ -346,7 +346,7 @@ object ResolutionProcess {
         fetchs.foldLeft(get(fetch))(_ orElse get(_))
     }
 
-  def fetchOne[F[_]](
+  def fetchOne[F[+_]](
     repositories: Seq[Repository],
     module: Module,
     version: String,
@@ -363,7 +363,7 @@ object ResolutionProcess {
       fetchs
     )(F)
 
-  def fetch0[F[_]](
+  def fetch0[F[+_]](
     repositories: Seq[Repository],
     fetch: Repository.Fetch[F],
     fetchs: Seq[Repository.Fetch[F]] = Nil
@@ -381,7 +381,7 @@ object ResolutionProcess {
       }.map(_.toSeq)
 
   @deprecated("Use fetch0 instead", "2.1.25")
-  def fetch[F[_]](
+  def fetch[F[+_]](
     repositories: Seq[Repository],
     fetch: Repository.Fetch[F],
     fetchs: Seq[Repository.Fetch[F]] = Nil

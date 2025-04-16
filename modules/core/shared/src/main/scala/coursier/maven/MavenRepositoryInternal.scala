@@ -121,7 +121,7 @@ private[coursier] class MavenRepositoryInternal(
       .withDefaultSignature
   }
 
-  private def versionsFromListing[F[_]](
+  private def versionsFromListing[F[+_]](
     module: Module,
     fetch: Repository.Fetch[F]
   )(implicit
@@ -175,7 +175,7 @@ private[coursier] class MavenRepositoryInternal(
       )
     }
 
-  def fetchVersions[F[_]](
+  def fetchVersions[F[+_]](
     module: Module,
     fetch: Repository.Fetch[F]
   )(implicit
@@ -199,7 +199,7 @@ private[coursier] class MavenRepositoryInternal(
     else viaMetadata
   }
 
-  private def snapshotVersioning[F[_]](
+  private def snapshotVersioning[F[+_]](
     module: Module,
     version: Version,
     fetch: Repository.Fetch[F]
@@ -218,7 +218,7 @@ private[coursier] class MavenRepositoryInternal(
     EitherT(task)
   }
 
-  def find[F[_]](
+  def find[F[+_]](
     module: Module,
     version: Version,
     fetch: Repository.Fetch[F]
@@ -279,7 +279,7 @@ private[coursier] class MavenRepositoryInternal(
     *
     * Useful for some weird sbt plugin stuff
     */
-  protected def fetchArtifactForModuleName[F[_]](
+  protected def fetchArtifactForModuleName[F[+_]](
     module: Module,
     moduleNameInFileName: String,
     version: Version,
@@ -316,7 +316,7 @@ private[coursier] class MavenRepositoryInternal(
       pomProjectTask
   }
 
-  def fetchArtifact[F[_]](
+  def fetchArtifact[F[+_]](
     module: Module,
     version: Version,
     versioningValue: Option[Version],
@@ -324,7 +324,7 @@ private[coursier] class MavenRepositoryInternal(
   )(implicit F: Monad[F]): EitherT[F, String, Project] =
     fetchArtifactForModuleName(module, module.name.value, version, versioningValue, fetch)(F)
 
-  def parsePom[F[_]](str: String)(implicit F: Monad[F]): EitherT[F, String, Project] =
+  def parsePom[F[+_]](str: String)(implicit F: Monad[F]): EitherT[F, String, Project] =
     EitherT.fromEither {
       val maybeProj =
         if (useSaxParser)
@@ -342,7 +342,7 @@ private[coursier] class MavenRepositoryInternal(
       } yield finalProj
     }
 
-  private def parseModule[F[_]](module: Module, str: String, uri: String)(implicit
+  private def parseModule[F[+_]](module: Module, str: String, uri: String)(implicit
     F: Monad[F]
   ): EitherT[F, String, Project] =
     EitherT.fromEither {
@@ -360,7 +360,7 @@ private[coursier] class MavenRepositoryInternal(
       }
     }
 
-  private def findVersioning[F[_]](
+  private def findVersioning[F[+_]](
     module: Module,
     version: Version,
     versioningValue: Option[Version],

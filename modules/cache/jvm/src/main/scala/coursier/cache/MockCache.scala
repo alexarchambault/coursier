@@ -17,7 +17,7 @@ import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
 // format: off
-@data class MockCache[F[_]](
+@data class MockCache[F[+_]](
   base: Path,
   extraData: Seq[Path],
   writeMissing: Boolean,
@@ -198,7 +198,7 @@ import scala.util.{Failure, Success, Try}
 
 object MockCache {
 
-  def create[F[_]: Sync](
+  def create[F[+_]: Sync](
     base: Path,
     pool: ExecutorService,
     extraData: Seq[Path] = Nil,
@@ -219,7 +219,7 @@ object MockCache {
       failsWhenWritingMissing = new ConcurrentHashMap[String, ArtifactError]
     )
 
-  def create[F[_]: Sync](
+  def create[F[+_]: Sync](
     base: Path,
     pool: ExecutorService,
     extraData: Seq[Path],

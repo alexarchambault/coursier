@@ -8,7 +8,7 @@ import coursier.util.Sync
 import dataclass.data
 import coursier.util.Task
 
-@data class Complete[F[_]](
+@data class Complete[F[+_]](
   cache: Cache[F],
   repositories: Seq[Repository] = Resolve.defaultRepositories,
   scalaVersionOpt: Option[String] = None,

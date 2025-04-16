@@ -205,7 +205,7 @@ import dataclass._
       authentication
     )
 
-  private[ivy] def listing[F[_]](
+  private[ivy] def listing[F[+_]](
     listingPatternOpt: Option[Pattern],
     listingName: String,
     variables: Map[String, String],
@@ -233,7 +233,7 @@ import dataclass._
         } yield Some((url, MavenComplete.split0(s, '\n', prefix)))
     }
 
-  private[ivy] def availableVersions[F[_]](
+  private[ivy] def availableVersions[F[+_]](
     module: Module,
     fetch: Repository.Fetch[F],
     prefix: String
@@ -248,7 +248,7 @@ import dataclass._
       prefix
     ).map(_.map(t => t._1 -> t._2.map(VersionParse.version).collect { case Some(v) => v }))
 
-  override protected def fetchVersions[F[_]](
+  override protected def fetchVersions[F[+_]](
     module: Module,
     fetch: Repository.Fetch[F]
   )(implicit
@@ -275,7 +275,7 @@ import dataclass._
         (Versions.empty, "")
     }
 
-  override def find0[F[_]](
+  override def find0[F[+_]](
     module: Module,
     version: Version,
     fetch: Repository.Fetch[F]
@@ -346,7 +346,7 @@ import dataclass._
     }
   }
 
-  override def completeOpt[F[_]: Monad](fetch: Fetch[F]): Some[Repository.Complete[F]] =
+  override def completeOpt[F[+_]: Monad](fetch: Fetch[F]): Some[Repository.Complete[F]] =
     Some(IvyComplete(this, fetch, Monad[F]))
 
 }

@@ -6,7 +6,7 @@ import coursier.core.Repository
 import coursier.util.{Artifact, EitherT, Sync}
 
 /** For benchmarking purposes */
-final class InMemoryCachingFetcher[F[_]](underlying: Repository.Fetch[F])(implicit S: Sync[F]) {
+final class InMemoryCachingFetcher[F[+_]](underlying: Repository.Fetch[F])(implicit S: Sync[F]) {
 
   @volatile private var onlyCache0 = false
   private val cache                = new ConcurrentHashMap[Artifact, Either[String, String]]

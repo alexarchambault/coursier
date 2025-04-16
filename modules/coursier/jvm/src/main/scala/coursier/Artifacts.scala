@@ -15,7 +15,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 import dataclass._
 
-@data class Artifacts[F[_]](
+@data class Artifacts[F[+_]](
   cache: Cache[F],
   resolutions: Seq[Resolution] = Nil,
   classifiers: Set[Classifier] = Set.empty,
@@ -419,7 +419,7 @@ object Artifacts {
       .sortBy(_._1)
       .map(_._2)
 
-  private[coursier] def fetchArtifacts[F[_]](
+  private[coursier] def fetchArtifacts[F[+_]](
     artifacts: Seq[Artifact],
     cache: Cache[F],
     otherCaches: Cache[F]*

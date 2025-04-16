@@ -34,7 +34,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.language.higherKinds
 
 // format: off
-@data class Resolve[F[_]](
+@data class Resolve[F[+_]](
   cache: Cache[F],
   dependencies: Seq[Dependency] = Nil,
   repositories: Seq[Repository] = Resolve.defaultRepositories,
@@ -461,7 +461,7 @@ object Resolve extends PlatformResolve {
       .withBoms(boms)
   }
 
-  private[coursier] def runProcess[F[_]](
+  private[coursier] def runProcess[F[+_]](
     initialResolution: Resolution,
     fetch: ResolutionProcess.Fetch0[F],
     maxIterations: Int = 200,

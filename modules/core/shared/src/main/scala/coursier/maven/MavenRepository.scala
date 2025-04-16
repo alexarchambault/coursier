@@ -59,7 +59,7 @@ object MavenRepository {
   ): Seq[(VariantPublication, Artifact)] =
     internal.moduleArtifacts(dependency, project)
 
-  override def find0[F[_]](
+  override def find0[F[+_]](
     module: Module,
     version: Version0,
     fetch: Repository.Fetch[F]
@@ -80,7 +80,7 @@ object MavenRepository {
   def withChanging(changing: Boolean): MavenRepository =
     withChanging(Some(changing))
 
-  override def fetchVersions[F[_]](
+  override def fetchVersions[F[+_]](
     module: Module,
     fetch: Repository.Fetch[F]
   )(implicit
@@ -88,6 +88,6 @@ object MavenRepository {
   ): EitherT[F, String, (Versions, String)] =
     internal.fetchVersions(module, fetch)
 
-  override def completeOpt[F[_]: Monad](fetch: Repository.Fetch[F]): Some[Repository.Complete[F]] =
+  override def completeOpt[F[+_]: Monad](fetch: Repository.Fetch[F]): Some[Repository.Complete[F]] =
     Some(MavenComplete(this, fetch, Monad[F]))
 }

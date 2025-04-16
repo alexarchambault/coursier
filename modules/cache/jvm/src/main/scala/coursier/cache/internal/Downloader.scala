@@ -24,7 +24,7 @@ import scala.util.Properties
 import scala.util.control.NonFatal
 
 // format: off
-@data class Downloader[F[_]](
+@data class Downloader[F[+_]](
   artifact: Artifact,
   cachePolicy: CachePolicy,
   location: File,

@@ -24,7 +24,7 @@ import coursier.version.{ConstraintReconciliation, VersionConstraint}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TestRunner[F[_]: Gather: ToFuture](
+class TestRunner[F[+_]: Gather: ToFuture](
   artifact: Repository.Fetch[F] = compatibility.taskArtifact,
   repositories: Seq[Repository] = Seq(MavenRepository("https://repo1.maven.org/maven2"))
 )(implicit ec: ExecutionContext) {

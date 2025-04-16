@@ -4,7 +4,7 @@ import coursier.util.{Artifact, EitherT}
 
 import scala.concurrent.ExecutionContext
 
-abstract class Cache[F[_]] extends PlatformCache[F] {
+abstract class Cache[F[+_]] extends PlatformCache[F] {
 
   import Cache.Fetch
 
@@ -37,6 +37,6 @@ abstract class Cache[F[_]] extends PlatformCache[F] {
 
 object Cache extends PlatformCacheCompanion {
 
-  type Fetch[F[_]] = Artifact => EitherT[F, String, String]
+  type Fetch[F[+_]] = Artifact => EitherT[F, String, String]
 
 }

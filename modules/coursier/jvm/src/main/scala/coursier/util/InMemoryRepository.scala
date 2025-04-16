@@ -148,7 +148,7 @@ object InMemoryRepository {
   ): InMemoryRepository =
     new InMemoryRepository(fallbacks, None, localArtifactsShouldBeCached)
 
-  def create[F[_]](
+  def create[F[+_]](
     fallbacks: Map[(Module, Version0), (URL, Boolean)],
     cache: FileCache[F]
   ): InMemoryRepository =
@@ -159,7 +159,7 @@ object InMemoryRepository {
     )
 
   @deprecated("Use create instead", "2.1.25")
-  def apply[F[_]](
+  def apply[F[+_]](
     fallbacks: Map[(Module, String), (URL, Boolean)],
     cache: FileCache[F]
   ): InMemoryRepository =
@@ -221,7 +221,7 @@ object InMemoryRepository {
       }
     )
 
-  override def find0[F[_]](
+  override def find0[F[+_]](
     module: Module,
     version: Version0,
     fetch: Repository.Fetch[F]

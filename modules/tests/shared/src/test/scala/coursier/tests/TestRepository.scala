@@ -7,7 +7,7 @@ import coursier.version.{Version => Version0, VersionConstraint => VersionConstr
 final case class TestRepository(projects: Map[(Module, VersionConstraint0), Project])
     extends Repository with Repository.VersionApi {
 
-  override def find0[F[_]](
+  override def find0[F[+_]](
     module: Module,
     version: Version0,
     fetch: Repository.Fetch[F]
