@@ -17,7 +17,7 @@ trait CoursierPublishModule extends PublishModule
       Developer("alexarchambault", "Alex Archambault", "https://github.com/alexarchambault")
     )
   )
-  def publishVersion = Task.Input(CoursierPublishModule.computeBuildVersion())
+  def publishVersion = "2.1.25-SNAPSHOT"
 }
 
 object CoursierPublishModule {
