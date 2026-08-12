@@ -18,6 +18,52 @@ trait CoursierPublishModule extends PublishModule
     )
   )
   def publishVersion = "2.1.25-SNAPSHOT"
+
+  /** Publishes locally, then drops the sub-millisecond digits of the mtime of the published files.
+    *
+    * Mill computes "quick" `PathRef` signatures for resolved dependencies, hashing the mtime of the
+    * JAR through `FileTime#hashCode`, which takes the whole nanoseconds into account. JVMs disagree
+    * on the sub-millisecond precision they read back for a given file - JDK 11 truncates Linux
+    * mtimes to microseconds, later JDKs report nanoseconds - so a signature computed by a Mill
+    * daemon running a recent JDK cannot be re-validated by a worker pinned to JDK 11 via `jvmId`.
+    * Any build depending on these JARs then dies with `Worker wire broken, worker likely crashed`.
+    *
+    * JARs coming from a coursier cache are unaffected, as their mtime is that of the
+    * `Last-Modified` header they were served with, and has a whole number of seconds. Publishing
+    * JARs whose mtime has no sub-millisecond digits puts the ones we publish here in the same boat.
+    */
+  override def publishLocal(
+    localIvyRepo: String = null,
+    sources: Boolean = true,
+    doc: Boolean = true,
+    transitive: Boolean = false
+  ): Task.Command[Unit] = {
+    val doPublish = super.publishLocal(localIvyRepo, sources, doc, transitive)
+    val publishedModules =
+      if (transitive)
+        (transitiveModuleDeps ++ transitiveRunModuleDeps)
+          .collect { case p: PublishModule => p }
+          .distinct
+      else Seq(this)
+    val publishedMetadata = Task.traverse(publishedModules)(_.artifactMetadata)
+    Task.Command {
+      doPublish()
+      val repoRoot = Option(localIvyRepo)
+        .map(os.Path(_, BuildCtx.workspaceRoot))
+        .getOrElse(
+          sys.props.get("ivy.home").map(os.Path(_)).getOrElse(os.home / ".ivy2") / "local"
+        )
+      for {
+        artifact <- publishedMetadata()
+        dir = repoRoot / artifact.group / artifact.id / artifact.version
+        if os.exists(dir)
+        file <- os.walk(dir)
+        if os.isFile(file)
+      }
+        // os.mtime reads milliseconds, os.mtime.set writes them back with no sub-millisecond digits
+        os.mtime.set(file, os.mtime(file))
+    }
+  }
 }
 
 object CoursierPublishModule {
