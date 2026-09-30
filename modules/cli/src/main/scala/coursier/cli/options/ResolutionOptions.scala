@@ -117,6 +117,11 @@ final case class ResolutionOptions(
 
   @Group(OptionGroup.resolution)
   @Hidden
+  @HelpMessage("Ignore the optional flag of dependency management entries, like Maven does")
+    ignoreOptionalFromDepMgmt: Boolean = false,
+
+  @Group(OptionGroup.resolution)
+  @Hidden
   @ExtraName("variant")
     variants: List[String] = Nil
 
@@ -278,6 +283,7 @@ final case class ResolutionOptions(
           jdkVersionOpt0 = jdkVersion.map(_.trim).filter(_.nonEmpty).map(Version(_)),
           forceDepMgmtVersions = forceDepMgmtVersions,
           enableDependencyOverrides = enableDependencyOverrides,
+          ignoreOptionalFromDepMgmt = ignoreOptionalFromDepMgmt,
           defaultVariantAttributes = defaultVariantAttributesOpt
         )
     }

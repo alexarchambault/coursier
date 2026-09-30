@@ -522,6 +522,26 @@ object ResolveTests extends TestSuite {
       assert(expectedOutput.noCrLf == output.noCrLf)
     }
 
+    test("ignore optional from dependency management") {
+      // io.kiota:kiota-http-vertx is a required dependency of apicurio-registry-java-sdk-common,
+      // but the dependency management of its parent POM marks it as optional
+      val dep                = "io.apicurio:apicurio-registry-java-sdk-common:3.1.7"
+      val kiotaHttpVertxLine = "io.kiota:kiota-http-vertx:0.0.31:default"
+
+      val defaultOutput = output(SharedResolveOptions(), dep)
+      assert(!defaultOutput.noCrLf.linesIterator.contains(kiotaHttpVertxLine))
+
+      val ignoreOptionalOutput = output(
+        SharedResolveOptions(
+          resolutionOptions = ResolutionOptions(
+            ignoreOptionalFromDepMgmt = true
+          )
+        ),
+        dep
+      )
+      assert(ignoreOptionalOutput.noCrLf.linesIterator.contains(kiotaHttpVertxLine))
+    }
+
     test("ignore binary scala version") {
       val options = SharedResolveOptions(
         resolutionOptions = ResolutionOptions(
