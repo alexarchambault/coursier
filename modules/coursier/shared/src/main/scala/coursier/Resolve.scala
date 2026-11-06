@@ -29,6 +29,7 @@ import coursier.params.rule.{Rule, RuleResolution}
 import coursier.util._
 import coursier.util.Monad.ops._
 import coursier.version.{ConstraintReconciliation, VersionConstraint, VersionParse}
+import scala.annotation.nowarn
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.language.higherKinds
@@ -195,6 +196,8 @@ import scala.language.higherKinds
       resolutionParams = resolutionParams.addVariantAttributes(attributes: _*)
     )
 
+  // still takes the deprecated mirror and configuration files into account
+  @nowarn("cat=deprecation")
   private def allMirrors0 =
     mirrors ++
       mirrorConfFiles.flatMap(_.mirrors()) ++

@@ -3,7 +3,7 @@ package coursier.core
 import coursier.core.compatibility._
 import dataclass.data
 
-import scala.annotation.tailrec
+import scala.annotation.{nowarn, tailrec}
 import scala.collection.compat.immutable.LazyList
 
 /** Used internally by Resolver.
@@ -24,6 +24,7 @@ import scala.collection.compat.immutable.LazyList
 
 object Version {
 
+  @nowarn("cat=deprecation")
   private[coursier] val zero = Version("0")
 
   sealed abstract class Item extends Ordered[Item] {

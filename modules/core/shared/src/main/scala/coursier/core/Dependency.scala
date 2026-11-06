@@ -6,6 +6,8 @@ import dataclass.{data, since}
 
 import java.util.concurrent.ConcurrentMap
 
+import scala.annotation.nowarn
+
 /** Dependencies with the same @module will typically see their @version-s merged.
   *
   * The remaining fields are left untouched, some being transitively propagated (exclusions,
@@ -548,6 +550,8 @@ import java.util.concurrent.ConcurrentMap
       copy(variantSelector = attr.addAttributes(attributes: _*))
   }
 
+  // passes the deprecated fields along
+  @nowarn("cat=deprecation")
   private[core] def copy0(
     module: Module,
     variantSelector: VariantSelector,
@@ -591,6 +595,8 @@ import java.util.concurrent.ConcurrentMap
     variantSelector.asConfiguration.exists(_.value.contains("$")) ||
     minimizedExclusions.hasProperties
 
+  // mentions the deprecated fields
+  @nowarn("cat=deprecation")
   def repr: String = {
     val lines = Seq.newBuilder[String]
     lines += s"${module.repr}:${versionConstraint.asString}"
