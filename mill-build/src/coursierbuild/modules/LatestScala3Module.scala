@@ -19,10 +19,13 @@ trait LatestScala3Module extends ScalaModule {
   def scalacOptions = Task {
     val opts = super.scalacOptions()
     if (scalaVersion().startsWith("3."))
-      // The sources are written for ScalaVersions.scala3 (and are often shared with Scala 2),
-      // so stick to its language version, rather than getting migration warnings about `using`
-      // for implicit arguments, `x: _*`, etc.
-      opts ++ Seq("-source", "3.3")
+      // -Yfuture-lazy-vals (see CsScalaModule) is the default from Scala 3.8 on, and later
+      // versions warn about it. CsScalaModule only passes it to earlier versions, but test
+      // modules get the options of their outer module, that can be on such a version. The
+      // sources are written for ScalaVersions.scala3 (and are often shared with Scala 2), so
+      // stick to its language version, rather than getting migration warnings about `using` for
+      // implicit arguments, `x: _*`, etc.
+      opts.filter(_ != "-Yfuture-lazy-vals") ++ Seq("-source", "3.3")
     else opts
   }
   def mvnDeps = Task {
